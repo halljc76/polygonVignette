@@ -15,6 +15,10 @@ The following packages were used to create this vignette:
 
 # Functions to Query API
 
+Note that there is a function not explicitly defined in this vignette,
+`process_query`, which was developed to simply convert JSON to `R` lists
+and extract the dataframe of stock figures for each query.
+
 The first function introduced in this report is extracting ticker
 symbols and general company information for companies participating in
 the U.S. stock market (e.g., Apple (AAPL), Google (GOOG), X/Twitter (X),
