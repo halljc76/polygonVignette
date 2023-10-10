@@ -135,8 +135,8 @@ conducted/recorded) are through a more premium version of the API.
 
 Additionally, because of the Free Plan query limits, juxtaposing
 multiple stocks without having to wait *minutes upon minutes* for limits
-to expire and for new querys to be submitted, is also intractable, hence
-this EDA focusing on one stock.
+to expire and for new querys to be submitted, is also intractable;
+hence, this EDA focusing on one stock.
 
 ## Background
 
