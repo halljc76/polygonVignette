@@ -113,71 +113,6 @@ query_market_stock <- function(date = "2023-01-09",
 }
 ```
 
-Rather than just querying stock prices, we may obtain moving average
-estimates to better understand historical trends, or potentially use
-them in prediction of stock prices (e.g., via time series modeling). The
-function below speaks to that avenue of questioning.
-
-``` r
-#' @title Query Moving Averages for a Ticker
-#' @description Retrieve simple or exponential moving average estimates for a
-#' particular ticker symbol, parameterized by timespan, number of data points,
-#' and series type.
-#' @param stockTicker Stock ticker symbol.
-#' @param timestamp Date, in YYYY-MM-DD format.
-#' @param series_type One of 'close', 'open', 'high', or 'low', referring 
-#' to the time series used.
-#' @param timespan One of "day", "minute", "hour", "week", "month",
-#' "quarter", "year" to indicate the time interval for `window`.
-#' @param window Number of data points per `timespan`.
-#' @returns Data frame of results.
-query_mavg_stocks <- function(stockTicker = "AAPL",
-                              type = "simple",
-                              timestamp = "2023-01-09",
-                              window = 50,
-                              timespan = "day",
-                              series_type = "close") {
-  
-  # Validate the timespan, series, and type for the API query (404 error returns 
-  # on other invalid queries, as per APIs)
-  
-  
-  if (!type %in% c("simple", "exponential")) {
-    warning("Stopping query -- the types allowed are 'simple' or
-             'exp' for Simple/Exponential Moving Average.")
-    stop()
-  }
-  
-  if (!series_type %in% c("close", "open", "high", "low")) {
-    warning("Stopping Query -- the series types allowed are 'close', 
-            'open', 'high', or 'low'.")
-    stop()
-  }
-  
-  if (!timespan %in% c("day", "minute", "hour", "week", "month",
-                       "quarter","year")) {
-    warning("Stopping query -- value should be one of 
-             day, minute, hour, week, month,
-             quarter, year")
-    stop()
-  }
-  
-  query <- GET(
-    paste0("https://api.polygon.io/v1/indicators/",
-           ifelse(type == "simple", "sma/", "exp/"),
-           stockTicker, "?timestamp=", timestamp,
-           "&timespan=", timespan,
-           "&adjusted=true&window=", toString(window), 
-           "&series_type=", series_type,
-           "&apiKey=",Sys.getenv("API_KEY"))
-  )
-  
-  # Use hidden function to process the query and convert
-  # results to dataframe
-  return(process_query(query))
-}
-```
-
 # Exploratory Data Analysis (EDA) via API
 
 ## Disclaimer
@@ -367,7 +302,14 @@ aapl_data_pivot %>% ggplot() + geom_line( aes(x = date, y = value,
        y = "Price (USD)", x = "Date")
 ```
 
-![](polygonVignette_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
+
+We see, at a high level, that Apple stocks are somewhat volatile over
+the almost-two-year historical data obtained with the Free Plan of the
+API; however, this is arguably true for just about any stock – as
+investors, markets, and many industries watch day-to-day fluctuations, a
+more granular flavor of analysis might offer greater insight into *why*
+one would watch the market daily.
 
 Alternatively, a more intuitive visualization might be through faceting
 the different series into their own plots.
@@ -384,7 +326,7 @@ ggplot(aapl_data_pivot) + geom_histogram(aes(value), binwidth = 0.5) +
   labs(x = "Price", y = "Number of Observations", title = "Histogram of Per-Minute AAPL Stock Prices", subtitle = "Red Lines are Averages Per Facet (All around $157 USD)") + theme_bw()
 ```
 
-![](polygonVignette_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
 
 There, aesthetically, is not much difference between the price
 histograms above – this makes sense, as the variables are *highly*
@@ -432,7 +374,7 @@ ggpaired(
 ) + labs(x = "Series", y = "Price (USD)", title = "Paired Plot of Open vs. Close Prices per Day for APPL Stock")
 ```
 
-![](polygonVignette_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
 
 While this plot still contains a high volume of information, the lack of
 a clear majority of black/red (black and red are financial indicators –
@@ -476,7 +418,7 @@ ggplot(data = daily_with_change) + geom_histogram(aes(x = change),
   theme_bw()
 ```
 
-![](polygonVignette_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-14-1.png)<!-- -->
 
 ``` r
 ggplot(data = daily_with_change) + geom_histogram(aes(x = extreme_change),
@@ -488,7 +430,7 @@ ggplot(data = daily_with_change) + geom_histogram(aes(x = extreme_change),
                          toString(mean(daily_with_change$extreme_change)), " USD")) + theme_bw()
 ```
 
-![](polygonVignette_files/figure-gfm/unnamed-chunk-15-2.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-14-2.png)<!-- -->
 
 We might especially be interested in summarizing the magnitude of these
 increases and decreases on days in which the close price exceeded/did
@@ -512,7 +454,7 @@ ggplot(data = daily_with_change) + geom_histogram(aes(x = abs(change)), binwidth
   theme_bw()
 ```
 
-![](polygonVignette_files/figure-gfm/unnamed-chunk-16-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
 
 The above plots reinforce the notion that, while the stock price is more
 volatile **within** the day (as evidenced by the second histogram), the
@@ -530,8 +472,17 @@ price data – it should be noted that the API capabilities extend beyond
 the stock market, into things such as Options and Crypto! The EDA itself
 results in the central conclusion that **stock prices are more volatile
 within a day, as opposed to across multiple days** – this is what makes
-investing difficult, especially for people such as day traders! The
-general trends, while evident over yearlong periods of data, are
+investing difficult, especially for people such as day traders! This is
+not to say that the stock prices remain relatively constant throughout
+days, weeks, and quarters (this claim would be refuted by the first plot
+shown), but instead to highlight that making timely trades is, as a
+consequence of both randomness and human nature, *difficult* – does a
+sudden fluctuation mean a stock price is about to rapidly increase,
+implying one should not yet sell? These types of questions are what many
+investing industries seek to answer, and what many mathematical results
+(e.g., Brownian motion, Navier-Stokes) seek to highlight.
+
+The general trends, while evident over yearlong periods of data, are
 difficult to take advantage of on a day-to-day basis, making the concept
 of investing ever more complicated (there *are* multiple large
 industries centered around the practice). More intuitive analysis is
