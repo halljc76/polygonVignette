@@ -121,7 +121,7 @@ being listed on popular exchanges.
 #' a particular day.
 #' @param date Date, in YYYY-MM-DD format.
 #' @param include_otc Boolean value to include/exclude OTC securities.
-#' @returns Data frame of results.
+#' @returns Data frame of results. 
 query_market_stock <- function(date = "2023-01-09",
                                include_otc = FALSE) {
   query <- GET(
@@ -130,7 +130,8 @@ query_market_stock <- function(date = "2023-01-09",
       date,
       "?adjusted=true",
       ifelse(include_otc, "&include_otc=true", ""),
-      "&apiKey=", Sys.getenv("API_KEY")
+      "&apiKey=", 
+      Sys.getenv("API_KEY")
     )
   )
   

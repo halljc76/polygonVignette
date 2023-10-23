@@ -183,9 +183,9 @@ table(stocks$type)
 
     ## 
     ##    ADRC      CS     ETF     ETN     ETS     ETV    FUND     PFD   RIGHT      SP 
-    ##      44     568     141       5      11       1      17      67      11      17 
+    ##      44     570     141       5      11       2      17      67      11      17 
     ##    UNIT WARRANT 
-    ##      40      78
+    ##      39      76
 
 ``` r
 table(stocks$primary_exchange)
@@ -193,7 +193,7 @@ table(stocks$primary_exchange)
 
     ## 
     ## ARCX BATS XASE XNAS XNYS 
-    ##  103   29   42  517  309
+    ##  103   30   39  518  310
 
 ``` r
 table(stocks$type, stocks$primary_exchange)
@@ -202,17 +202,17 @@ table(stocks$type, stocks$primary_exchange)
     ##          
     ##           ARCX BATS XASE XNAS XNYS
     ##   ADRC       0    0    1   28   15
-    ##   CS         0    0   29  352  187
-    ##   ETF       92   29    0   20    0
+    ##   CS         0    0   28  353  189
+    ##   ETF       91   30    0   20    0
     ##   ETN        5    0    0    0    0
     ##   ETS        5    0    0    6    0
-    ##   ETV        1    0    0    0    0
+    ##   ETV        2    0    0    0    0
     ##   FUND       0    0    1    0   16
     ##   PFD        0    0    1    8   58
     ##   RIGHT      0    0    0   11    0
     ##   SP         0    0    0    0   17
-    ##   UNIT       0    0    4   31    5
-    ##   WARRANT    0    0    6   61   11
+    ##   UNIT       0    0    3   31    5
+    ##   WARRANT    0    0    5   61   10
 
 Note that we can glean a lot of information about the stocks from this
 data, namely:
@@ -276,13 +276,13 @@ aapl_data <- aapl_data %>% mutate(
 head(aapl_data)
 ```
 
-    ##      v       vw      o      c      h      l                   t  n
-    ## 1 2246 142.2284 142.05 142.30 142.46 142.05 2021-10-11 08:00:00 94
-    ## 2  555 142.2837 142.32 142.32 142.32 142.32 2021-10-11 08:02:00 10
-    ## 3 1777 142.4410 142.49 142.40 142.49 142.40 2021-10-11 08:04:00 64
-    ## 4 1479 142.3576 142.40 142.34 142.40 142.34 2021-10-11 08:06:00 21
-    ## 5  920 142.3067 142.30 142.30 142.32 142.30 2021-10-11 08:07:00  9
-    ## 6  521 142.2155 142.21 142.21 142.21 142.21 2021-10-11 08:08:00 13
+    ##      v       vw      o      c      h      l                   t   n
+    ## 1 2978 148.4764 148.50 148.57 148.57 148.45 2021-10-25 08:00:00 148
+    ## 2 1278 148.5826 148.60 148.58 148.60 148.58 2021-10-25 08:01:00  59
+    ## 3  807 148.6563 148.70 148.70 148.70 148.70 2021-10-25 08:02:00  29
+    ## 4  709 148.6926 148.68 148.68 148.68 148.68 2021-10-25 08:03:00  27
+    ## 5  231 148.8508 148.85 148.85 148.85 148.85 2021-10-25 08:05:00  17
+    ## 6  592 148.8230 148.81 148.81 148.81 148.81 2021-10-25 08:08:00  22
 
 We now plot the different series below. **Due to a maximal number of API
 calls per minute and a maximum limit on the datapoints returned by each
@@ -342,10 +342,10 @@ cor(aapl_data %>% select(-t, -n, -v, -vw))
 ```
 
     ##           o         c         h         l
-    ## o 1.0000000 0.9999637 0.9999620 0.9999647
-    ## c 0.9999637 1.0000000 0.9999618 0.9999675
-    ## h 0.9999620 0.9999618 1.0000000 0.9999217
-    ## l 0.9999647 0.9999675 0.9999217 1.0000000
+    ## o 1.0000000 0.9999563 0.9999546 0.9999572
+    ## c 0.9999563 1.0000000 0.9999543 0.9999607
+    ## h 0.9999546 0.9999543 1.0000000 0.9999064
+    ## l 0.9999572 0.9999607 0.9999064 1.0000000
 
 Additionally, of interest might be the *open* and *close* prices, which
 can be thought of as pairs of datapoints – we might visualize the
@@ -393,7 +393,7 @@ table(aapl_data_twoyrday$c > aapl_data_twoyrday$o)
 
     ## 
     ## FALSE  TRUE 
-    ##   224   277
+    ##   221   270
 
 Alternatively, we might be interested in evaluating the magnitude of
 these daily share-price increases – we create a variable `change`
