@@ -98,7 +98,7 @@ being listed on popular exchanges.
 #' a particular day.
 #' @param date Date, in YYYY-MM-DD format.
 #' @param include_otc Boolean value to include/exclude OTC securities.
-#' @returns Data frame of results.
+#' @returns Data frame of results. 
 query_market_stock <- function(date = "2023-01-09",
                                include_otc = FALSE) {
   query <- GET(
@@ -107,7 +107,8 @@ query_market_stock <- function(date = "2023-01-09",
       date,
       "?adjusted=true",
       ifelse(include_otc, "&include_otc=true", ""),
-      "&apiKey=", Sys.getenv("API_KEY")
+      "&apiKey=", 
+      Sys.getenv("API_KEY")
     )
   )
   
@@ -306,7 +307,7 @@ aapl_data_pivot %>% ggplot() + geom_line( aes(x = date, y = value,
        y = "Price (USD)", x = "Date")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
 
 We see, at a high level, that Apple stocks are somewhat volatile over
 the almost-two-year historical data obtained with the Free Plan of the
@@ -330,7 +331,7 @@ ggplot(aapl_data_pivot) + geom_histogram(aes(value), binwidth = 0.5) +
   labs(x = "Price", y = "Number of Observations", title = "Histogram of Per-Minute AAPL Stock Prices", subtitle = "Red Lines are Averages Per Facet (All around $157 USD)") + theme_bw()
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
 
 There, aesthetically, is not much difference between the price
 histograms above – this makes sense, as the variables are *highly*
@@ -378,7 +379,7 @@ ggpaired(
 ) + labs(x = "Series", y = "Price (USD)", title = "Paired Plot of Open vs. Close Prices per Day for APPL Stock")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
 
 While this plot still contains a high volume of information, the lack of
 a clear majority of black/red (black and red are financial indicators –
@@ -422,7 +423,7 @@ ggplot(data = daily_with_change) + geom_histogram(aes(x = change),
   theme_bw()
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-14-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
 
 ``` r
 ggplot(data = daily_with_change) + geom_histogram(aes(x = extreme_change),
@@ -434,7 +435,7 @@ ggplot(data = daily_with_change) + geom_histogram(aes(x = extreme_change),
                          toString(mean(daily_with_change$extreme_change)), " USD")) + theme_bw()
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-14-2.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-15-2.png)<!-- -->
 
 We might especially be interested in summarizing the magnitude of these
 increases and decreases on days in which the close price exceeded/did
@@ -458,7 +459,7 @@ ggplot(data = daily_with_change) + geom_histogram(aes(x = abs(change)), binwidth
   theme_bw()
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-16-1.png)<!-- -->
 
 The above plots reinforce the notion that, while the stock price is more
 volatile **within** the day (as evidenced by the second histogram), the
